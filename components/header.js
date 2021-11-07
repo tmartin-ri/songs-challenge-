@@ -12,7 +12,8 @@ export default function Header({ initialSearch, performSearch }) {
           <form
             onSubmit={e => {
               e.preventDefault();
-              performSearch(search);
+              const handledSearch = search.replaceAll(/'/g, "''")
+              performSearch(handledSearch);
             }}>
             <div className="input-group">
               <input
