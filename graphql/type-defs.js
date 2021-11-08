@@ -8,6 +8,9 @@ module.exports = gql`
     current_page: Int
     total: Int
     has_more: Boolean!
+    not_danceable: Int
+    semi_danceable: Int
+    danceable: Int
   }
 
   type Song {
@@ -43,7 +46,7 @@ module.exports = gql`
   }
 
   type Query {
-    Songs(page: Int!, search: String): SongsList!
+    Songs(page: Int!, search: String, danceability: String): SongsList!
     SongsByGenre(genre: String!): [Song!]!
   }
 `;

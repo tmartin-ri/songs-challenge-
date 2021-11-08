@@ -28,12 +28,41 @@ export default {
       const totalResult = await db.exec(
         search
           ? `SELECT COUNT(*) FROM songs
-      WHERE track_name LIKE '%${search}%'
-      OR track_artist LIKE '%${search}%'
-      OR track_album_name LIKE '%${search}%'`
-          : 'SELECT COUNT(*) FROM songs'
+        WHERE track_name LIKE '%${search}%'
+        OR track_artist LIKE '%${search}%'
+        OR track_album_name LIKE '%${search}%'`
+        : 'SELECT COUNT(*) FROM songs'
       );
-
+      const not_danceable = await db.exec(
+        search
+          ? `SELECT COUNT(*) FROM songs
+        WHERE (track_name LIKE '%${search}%'
+        OR track_artist LIKE '%${search}%'
+        OR track_album_name LIKE '%${search}%')
+        AND danceability <= 0.5`
+        : `SELECT COUNT(*) FROM songs
+        WHERE danceability <= 0.5`
+      );
+      const semi_danceable = await db.exec(
+        search
+          ? `SELECT COUNT(*) FROM songs
+        WHERE (track_name LIKE '%${search}%'
+        OR track_artist LIKE '%${search}%'
+        OR track_album_name LIKE '%${search}%')
+        AND (danceability > 0.5 AND 0.75 > danceability)`
+        : `SELECT COUNT(*) FROM songs
+        WHERE danceability > 0.5 AND 0.75 > danceability`
+      );
+      const danceable = await db.exec(
+        search
+          ? `SELECT COUNT(*) FROM songs
+        WHERE (track_name LIKE '%${search}%'
+        OR track_artist LIKE '%${search}%'
+        OR track_album_name LIKE '%${search}%')
+        AND danceability >= 0.75`
+        : `SELECT COUNT(*) FROM songs
+        WHERE danceability > 0.5 AND 0.75 > danceability`
+      );
       const total = totalResult[0].values[0][0];
 
       return {
@@ -42,7 +71,10 @@ export default {
           per_page: PER_PAGE,
           current_page: page,
           total: total,
-          has_more: offsetEnd < total
+          has_more: offsetEnd < total,
+          not_danceable: not_danceable[0].values[0][0],
+          semi_danceable: semi_danceable[0].values[0][0],
+          danceable: danceable[0].values[0][0],
         }
       };
     },

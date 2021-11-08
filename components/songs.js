@@ -2,7 +2,9 @@ import { request, gql } from 'graphql-request';
 import useSWR from 'swr';
 import Link from 'next/link';
 
+import Danceable from './danceable';
 import Song from './song';
+import { useEffect, useState } from 'react';
 
 const SONGS_QUERY = gql`
   query HomePage($page: Int!, $search: String) {
@@ -38,6 +40,9 @@ const SONGS_QUERY = gql`
         current_page
         total
         has_more
+        not_danceable
+        semi_danceable
+        danceable    
       }
     }
   }
@@ -48,6 +53,18 @@ const fetcher = (page, search) =>
 
 export default function Songs({ page, search }) {
   const { data, error } = useSWR([page, search], fetcher);
+  const [danceability, setDanceAbility] = useState('all')
+  const [songs, setSongs] = useState([])
+
+  useEffect(() => {
+    if (danceability === 'danceable') {
+      setSongs(data.Songs.songs.filter(song => song.danceability >= 0.75))
+    } else if (danceability === 'semi_danceable') {
+      setSongs(data.Songs.songs.filter(song => 0.51 > song.danceability < 0.75))
+    } else if (danceability === 'not_danceable') {
+      setSongs(data.Songs.songs.filter(song => song.danceability <= 0.5))
+    } else setSongs(data?.Songs.songs)
+  }, [danceability, data])
 
   if (!data && !error)
     return (
@@ -71,9 +88,17 @@ export default function Songs({ page, search }) {
 
   return (
     <>
-      {data.Songs.songs.length ? (
+      <Danceable 
+        {...{
+          notDanceable: data?.Songs.pageInfo.not_danceable,
+          semiDanceable: data?.Songs.pageInfo.semi_danceable,
+          danceable: data?.Songs.pageInfo.danceable,
+          setDanceAbility
+        }}
+      />
+      {songs?.length ? (
         <div className="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3">
-          {data.Songs.songs.map(song => (
+          {songs.map(song => (
             <Song key={song.track_id} song={song} />
           ))}
         </div>
