@@ -45,8 +45,15 @@ module.exports = gql`
     pageInfo: PageInfo!
   }
 
+  input SongsQueryInput {
+    page: Int!,
+    search: String,
+    danceabilityLow: Float,
+    danceabilityHigh: Float
+  }
+
   type Query {
-    Songs(page: Int!, search: String, danceabilityLow: Float, danceabilityHigh: Float): SongsList!
+    Songs(input: SongsQueryInput): SongsList!
     SongsByGenre(genre: String!): [Song!]!
   }
 `;

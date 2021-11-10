@@ -7,8 +7,8 @@ import Song from './song';
 import { useEffect, useState } from 'react';
 
 const SONGS_QUERY = gql`
-  query HomePage($page: Int!, $search: String, $danceabilityLow: Float, $danceabilityHigh: Float) {
-    Songs(page: $page, search: $search, danceabilityLow: $danceabilityLow, danceabilityHigh: $danceabilityHigh) {
+  query HomePage($input: SongsQueryInput) {
+    Songs(input: $input) {
       songs {
         track_id
         track_name
@@ -49,7 +49,7 @@ const SONGS_QUERY = gql`
 `;
 
 const fetcher = (page, search, danceabilityLow, danceabilityHigh) =>
-  request('http://localhost:3000/api/graphql', SONGS_QUERY, { page, search, danceabilityLow, danceabilityHigh });
+  request('http://localhost:3000/api/graphql', SONGS_QUERY, { input: { page, search, danceabilityLow, danceabilityHigh } });
 
 export default function Songs({ page, search, danceabilityLow, danceabilityHigh, danceability }) {
 

@@ -2,7 +2,9 @@ const PER_PAGE = 15;
 
 export default {
   Query: {
-    async Songs(root, { page, search, danceabilityLow, danceabilityHigh }, { db }) {
+    async Songs(root, args, { db }) {
+      console.log('args: ', args)
+      const { page, search, danceabilityLow, danceabilityHigh } = args.input
       const offsetStart = PER_PAGE * (page - 1);
       const offsetEnd = offsetStart + PER_PAGE;
 
