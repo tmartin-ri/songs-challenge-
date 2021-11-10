@@ -51,8 +51,8 @@ const SONGS_QUERY = gql`
 const fetcher = (page, search, danceabilityLow, danceabilityHigh) =>
   request('http://localhost:3000/api/graphql', SONGS_QUERY, { input: { page, search, danceabilityLow, danceabilityHigh } });
 
-export default function Songs({ page, search, danceabilityLow, danceabilityHigh, danceability }) {
-
+export default function Songs(props) {
+  const { page, search, danceabilityLow, danceabilityHigh, danceability } = props
   const { data, error } = useSWR([page, search, danceabilityLow, danceabilityHigh], fetcher);
   const [songs, setSongs] = useState([])
 
