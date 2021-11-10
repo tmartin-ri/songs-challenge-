@@ -63,8 +63,8 @@ export default function Genre({ genre }) {
   }
 
   return (
-    <div className="container" id={genre}>
-      <h2 className="text-capitalize my-5 py-5">{genre}</h2>
+    <div className="container">
+      <h2 className="text-capitalize my-5 py-5" id={genre}>{genre}</h2>
       {data.SongsByGenre.length ? (
         <div className="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3">
           {data.SongsByGenre.map(song => (

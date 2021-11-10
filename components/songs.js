@@ -57,13 +57,15 @@ export default function Songs({ page, search }) {
   const [songs, setSongs] = useState([])
 
   useEffect(() => {
+    if (data) {
     if (danceability === 'danceable') {
       setSongs(data.Songs.songs.filter(song => song.danceability >= 0.75))
     } else if (danceability === 'semi_danceable') {
       setSongs(data.Songs.songs.filter(song => 0.51 > song.danceability < 0.75))
     } else if (danceability === 'not_danceable') {
       setSongs(data.Songs.songs.filter(song => song.danceability <= 0.5))
-    } else setSongs(data?.Songs.songs)
+    } else data && setSongs(data.Songs.songs)
+  }
   }, [danceability, data])
 
   if (!data && !error)
@@ -88,15 +90,17 @@ export default function Songs({ page, search }) {
 
   return (
     <>
-      <Danceable 
-        {...{
-          notDanceable: data?.Songs.pageInfo.not_danceable,
-          semiDanceable: data?.Songs.pageInfo.semi_danceable,
-          danceable: data?.Songs.pageInfo.danceable,
-          setDanceAbility
-        }}
-      />
-      {songs?.length ? (
+      {data &&
+        <Danceable 
+          {...{
+            notDanceable: data.Songs.pageInfo.not_danceable,
+            semiDanceable: data.Songs.pageInfo.semi_danceable,
+            danceable: data.Songs.pageInfo.danceable,
+            danceability,
+            setDanceAbility
+          }}
+        />}
+      {songs && songs.length ? (
         <div className="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3">
           {songs.map(song => (
             <Song key={song.track_id} song={song} />
