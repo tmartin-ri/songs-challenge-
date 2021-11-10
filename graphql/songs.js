@@ -2,18 +2,22 @@ const PER_PAGE = 15;
 
 export default {
   Query: {
-    async Songs(root, { page, search }, { db }) {
+    async Songs(root, { page, search, danceabilityLow, danceabilityHigh }, { db }) {
       const offsetStart = PER_PAGE * (page - 1);
       const offsetEnd = offsetStart + PER_PAGE;
 
       const query = search
         ? `SELECT * FROM songs
-      WHERE track_name LIKE '%${search}%'
+      WHERE (danceability >= ${danceabilityLow}
+      AND danceability <= ${danceabilityHigh})
+      AND (track_name LIKE '%${search}%'
       OR track_artist LIKE '%${search}%'
-      OR track_album_name LIKE '%${search}%'
+      OR track_album_name LIKE '%${search}%')
       ORDER BY track_name ASC
       LIMIT ${PER_PAGE} OFFSET ${offsetStart}`
         : `SELECT * FROM songs
+      WHERE danceability >= ${danceabilityLow}
+      AND danceability <= ${danceabilityHigh}
       ORDER BY track_name ASC
       LIMIT ${PER_PAGE} OFFSET ${offsetStart}`;
 
@@ -61,7 +65,7 @@ export default {
         OR track_album_name LIKE '%${search}%')
         AND danceability >= 0.75`
         : `SELECT COUNT(*) FROM songs
-        WHERE danceability > 0.5 AND 0.75 > danceability`
+        WHERE danceability >= 0.75`
       );
       const total = totalResult[0].values[0][0];
 

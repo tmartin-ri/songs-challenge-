@@ -1,15 +1,41 @@
+import Link from 'next/link';
 
-export default function Danceable({ notDanceable, semiDanceable, danceable, danceability, setDanceAbility}) {
-  function updateDanceability (newDanceability) {
-    setDanceAbility(newDanceability)
-  }
+export default function Danceable({ notDanceable, semiDanceable, danceable, search, danceabilityLow, danceabilityHigh }) {
   return (
     <div className="float-lg-start">
       <div className="list-group">
-        {!!danceable && <button onClick={() => updateDanceability('danceable')} className="list-group-item list-group-item-action">Danceable ({danceable})</button>}
-        {!!semiDanceable && <button onClick={() => setDanceAbility('semi_danceable')} className="list-group-item list-group-item-action">Semi Danceable ({semiDanceable})</button>}
-        {!!notDanceable && <button onClick={() => setDanceAbility('not_danceable')} className="list-group-item list-group-item-action">Not Danceable ({notDanceable})</button>}
-        {danceability !== 'all' && <button onClick={() => setDanceAbility('all')} className="list-group-item list-group-item-action">Clear Filter</button>}
+        {!!danceable && 
+            <Link
+              passHref
+              href={`/${[search, 'danceable']
+                .filter(part => part)
+                .join('/')}`}>
+              <a className={(danceabilityLow === 0.75) ? "list-group-item list-group-item-action fw-bold" : "list-group-item list-group-item-action"} style={{ color: 'blue' }}>Danceable ({danceable})</a>
+            </Link>}
+        {!!semiDanceable && 
+            <Link
+              passHref
+              href={`/${[search, 'semi_danceable']
+                .filter(part => part)
+                .join('/')}`}>
+              <a className={(danceabilityLow === 0.51) ? "list-group-item list-group-item-action fw-bold" : "list-group-item list-group-item-action"} style={{ color: 'blue' }}>Semi Danceable ({semiDanceable})</a>
+            </Link>}
+        {!!notDanceable && 
+            <Link
+              passHref
+              href={`/${[search, 'not_danceable']
+                .filter(part => part)
+                .join('/')}`}>
+              <a className={(danceabilityHigh === 0.5) ? "list-group-item list-group-item-action fw-bold" : "list-group-item list-group-item-action"} style={{ color: 'blue' }}>Not Danceable ({notDanceable})</a>
+            </Link>}
+        {(danceabilityLow > 0 || danceabilityHigh < 1) && 
+            <Link
+              passHref
+              href={`/${[search]
+                .filter(part => part)
+                .join('/')}`}> 
+                <a className="list-group-item list-group-item-action list-group-item-secondary">Clear Filter</a>
+              </Link>}
       </div>
     </div>
   )

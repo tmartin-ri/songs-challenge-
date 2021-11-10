@@ -46,7 +46,7 @@ module.exports = gql`
   }
 
   type Query {
-    Songs(page: Int!, search: String, danceability: String): SongsList!
+    Songs(page: Int!, search: String, danceabilityLow: Float, danceabilityHigh: Float): SongsList!
     SongsByGenre(genre: String!): [Song!]!
   }
 `;

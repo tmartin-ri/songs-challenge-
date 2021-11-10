@@ -7,8 +7,8 @@ import Song from './song';
 import { useEffect, useState } from 'react';
 
 const SONGS_QUERY = gql`
-  query HomePage($page: Int!, $search: String) {
-    Songs(page: $page, search: $search) {
+  query HomePage($page: Int!, $search: String, $danceabilityLow: Float, $danceabilityHigh: Float) {
+    Songs(page: $page, search: $search, danceabilityLow: $danceabilityLow, danceabilityHigh: $danceabilityHigh) {
       songs {
         track_id
         track_name
@@ -48,25 +48,19 @@ const SONGS_QUERY = gql`
   }
 `;
 
-const fetcher = (page, search) =>
-  request('http://localhost:3000/api/graphql', SONGS_QUERY, { page, search });
+const fetcher = (page, search, danceabilityLow, danceabilityHigh) =>
+  request('http://localhost:3000/api/graphql', SONGS_QUERY, { page, search, danceabilityLow, danceabilityHigh });
 
-export default function Songs({ page, search }) {
-  const { data, error } = useSWR([page, search], fetcher);
-  const [danceability, setDanceAbility] = useState('all')
+export default function Songs({ page, search, danceabilityLow, danceabilityHigh, danceability }) {
+
+  const { data, error } = useSWR([page, search, danceabilityLow, danceabilityHigh], fetcher);
   const [songs, setSongs] = useState([])
 
   useEffect(() => {
     if (data) {
-    if (danceability === 'danceable') {
-      setSongs(data.Songs.songs.filter(song => song.danceability >= 0.75))
-    } else if (danceability === 'semi_danceable') {
-      setSongs(data.Songs.songs.filter(song => 0.51 > song.danceability < 0.75))
-    } else if (danceability === 'not_danceable') {
-      setSongs(data.Songs.songs.filter(song => song.danceability <= 0.5))
-    } else data && setSongs(data.Songs.songs)
-  }
-  }, [danceability, data])
+      setSongs(data.Songs.songs)
+    }
+  }, [data])
 
   if (!data && !error)
     return (
@@ -96,8 +90,9 @@ export default function Songs({ page, search }) {
             notDanceable: data.Songs.pageInfo.not_danceable,
             semiDanceable: data.Songs.pageInfo.semi_danceable,
             danceable: data.Songs.pageInfo.danceable,
-            danceability,
-            setDanceAbility
+            search,
+            danceabilityLow, 
+            danceabilityHigh
           }}
         />}
       {songs && songs.length ? (
@@ -109,12 +104,12 @@ export default function Songs({ page, search }) {
       ) : (
         <p className="text-center">No Results!</p>
       )}
-      <Pagination search={search} pageInfo={data.Songs.pageInfo} />
+      <Pagination search={search} pageInfo={data.Songs.pageInfo} danceability={danceability}/>
     </>
   );
 }
 
-function Pagination({ pageInfo, search }) {
+function Pagination({ pageInfo, search, danceability }) {
   const currentPage = pageInfo.current_page || 1;
 
   return (
@@ -126,7 +121,7 @@ function Pagination({ pageInfo, search }) {
           ) : (
             <Link
               passHref
-              href={`/${[search, currentPage - 1]
+              href={`/${[search, currentPage - 1, danceability]
                 .filter(part => part)
                 .join('/')}`}>
               <a className="page-link">Previous</a>
@@ -138,7 +133,7 @@ function Pagination({ pageInfo, search }) {
           {pageInfo.has_more ? (
             <Link
               passHref
-              href={`/${[search, currentPage + 1]
+              href={`/${[search, currentPage + 1, danceability]
                 .filter(part => part)
                 .join('/')}`}>
               <a className="page-link">Next</a>
