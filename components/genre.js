@@ -1,7 +1,7 @@
-import { request, gql } from 'graphql-request';
-import useSWR from 'swr';
+import { request, gql } from "graphql-request";
+import useSWR from "swr";
 
-import Song from './song';
+import Song from "./song";
 
 const SONGS_QUERY = gql`
   query HomePage($genre: String!) {
@@ -35,14 +35,14 @@ const SONGS_QUERY = gql`
 `;
 
 const fetcher = genre =>
-  request('http://localhost:3000/api/graphql', SONGS_QUERY, {
+  request("http://localhost:3000/api/graphql", SONGS_QUERY, {
     genre
   });
 
 export default function Genre({ genre }) {
   const { data, error } = useSWR([genre], fetcher);
 
-  if (!data && !error)
+  if (!data && !error) {
     return (
       <div className="mt-5 d-flex justify-content-center">
         <div className="spinner-border text-info" role="status">
@@ -50,7 +50,8 @@ export default function Genre({ genre }) {
         </div>
       </div>
     );
-
+  }
+  
   if (error) {
     console.error(error);
     return (
@@ -64,16 +65,16 @@ export default function Genre({ genre }) {
 
   return (
     <div className="container">
-      <h2 className="text-capitalize py-5">{genre}</h2>
-      {data.SongsByGenre.length ? (
-        <div className="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3">
-          {data.SongsByGenre.map(song => (
-            <Song key={song.track_id} song={song} />
-          ))}
-        </div>
-      ) : (
-        <p className="text-center">No Results!</p>
-      )}
+      <h2 className="text-capitalize my-5 py-5" id={genre}>{genre}</h2>
+        {data.SongsByGenre.length ? (
+          <div className="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3">
+            {data.SongsByGenre.map(song => (
+              <Song key={song.track_id} song={song} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center">No Results!</p>
+        )}
     </div>
   );
 }

@@ -115,6 +115,13 @@ test('renders songs', async () => {
   expect(container).toMatchInlineSnapshot(`
     <div>
       <div
+        class="float-lg-start"
+      >
+        <div
+          class="list-group"
+        />
+      </div>
+      <div
         class="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3"
       >
         <div

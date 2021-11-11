@@ -1,12 +1,14 @@
-import { request, gql } from 'graphql-request';
-import useSWR from 'swr';
-import Link from 'next/link';
+import { request, gql } from "graphql-request";
+import useSWR from "swr";
+import Link from "next/link";
 
-import Song from './song';
+import Danceable from "./danceable";
+import Song from "./song";
+import { useEffect, useState } from "react";
 
 const SONGS_QUERY = gql`
-  query HomePage($page: Int!, $search: String) {
-    Songs(page: $page, search: $search) {
+  query HomePage($input: SongsQueryInput) {
+    Songs(input: $input) {
       songs {
         track_id
         track_name
@@ -38,18 +40,29 @@ const SONGS_QUERY = gql`
         current_page
         total
         has_more
+        not_danceable
+        semi_danceable
+        danceable    
       }
     }
   }
 `;
 
-const fetcher = (page, search) =>
-  request('http://localhost:3000/api/graphql', SONGS_QUERY, { page, search });
+const fetcher = (page, search, danceabilityLow, danceabilityHigh) =>
+  request("http://localhost:3000/api/graphql", SONGS_QUERY, { input: { page, search, danceabilityLow, danceabilityHigh } });
 
-export default function Songs({ page, search }) {
-  const { data, error } = useSWR([page, search], fetcher);
+export default function Songs(props) {
+  const { page, search, danceabilityLow, danceabilityHigh, danceability } = props;
+  const { data, error } = useSWR([page, search, danceabilityLow, danceabilityHigh], fetcher);
+  const [songs, setSongs] = useState([]);
 
-  if (!data && !error)
+  useEffect(() => {
+    if (data) {
+      setSongs(data.Songs.songs)
+    }
+  }, [data])
+
+  if (!data && !error) {
     return (
       <div className="mt-5 d-flex justify-content-center">
         <div className="spinner-border text-info" role="status">
@@ -57,7 +70,8 @@ export default function Songs({ page, search }) {
         </div>
       </div>
     );
-
+  }
+  
   if (error) {
     console.error(error);
     return (
@@ -71,47 +85,58 @@ export default function Songs({ page, search }) {
 
   return (
     <>
-      {data.Songs.songs.length ? (
+      {data &&
+        <Danceable 
+          {...{
+            notDanceable: data.Songs.pageInfo.not_danceable,
+            semiDanceable: data.Songs.pageInfo.semi_danceable,
+            danceable: data.Songs.pageInfo.danceable,
+            search,
+            danceabilityLow, 
+            danceabilityHigh
+          }}
+        />}
+      {songs && songs.length ? (
         <div className="row row-cols-1 row-cols-sm-3 row-cols-lg-5 g-3">
-          {data.Songs.songs.map(song => (
+          {songs.map(song => (
             <Song key={song.track_id} song={song} />
           ))}
         </div>
       ) : (
         <p className="text-center">No Results!</p>
       )}
-      <Pagination search={search} pageInfo={data.Songs.pageInfo} />
+      <Pagination search={search} pageInfo={data.Songs.pageInfo} danceability={danceability}/>
     </>
   );
 }
 
-function Pagination({ pageInfo, search }) {
+function Pagination({ pageInfo, search, danceability }) {
   const currentPage = pageInfo.current_page || 1;
 
   return (
     <nav aria-label="Page navigation">
       <ul className="pagination mt-5 d-flex justify-content-center">
-        <li className={currentPage === 1 ? 'page-item disabled' : 'page-item'}>
+        <li className={currentPage === 1 ? "page-item disabled" : "page-item"}>
           {currentPage === 1 ? (
             <span className="page-link">Previous</span>
           ) : (
             <Link
               passHref
-              href={`/${[search, currentPage - 1]
+              href={`/${[search, currentPage - 1, danceability]
                 .filter(part => part)
-                .join('/')}`}>
+                .join("/")}`}>
               <a className="page-link">Previous</a>
             </Link>
           )}
         </li>
 
-        <li className={pageInfo.has_more ? 'page-item' : 'page-item disabled'}>
+        <li className={pageInfo.has_more ? "page-item" : "page-item disabled"}>
           {pageInfo.has_more ? (
             <Link
               passHref
-              href={`/${[search, currentPage + 1]
+              href={`/${[search, currentPage + 1, danceability]
                 .filter(part => part)
-                .join('/')}`}>
+                .join("/")}`}>
               <a className="page-link">Next</a>
             </Link>
           ) : (

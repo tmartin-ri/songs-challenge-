@@ -1,5 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import Genres from '../components/genres';
+import "bootstrap/dist/css/bootstrap.css";
+import Genres from "../components/genres";
 
 export default function GenresPage() {
   return (

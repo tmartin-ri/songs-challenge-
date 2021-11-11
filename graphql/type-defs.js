@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 
 module.exports = gql`
   scalar Date
@@ -8,6 +8,9 @@ module.exports = gql`
     current_page: Int
     total: Int
     has_more: Boolean!
+    not_danceable: Int
+    semi_danceable: Int
+    danceable: Int
   }
 
   type Song {
@@ -42,8 +45,15 @@ module.exports = gql`
     pageInfo: PageInfo!
   }
 
+  input SongsQueryInput {
+    page: Int!,
+    search: String,
+    danceabilityLow: Float,
+    danceabilityHigh: Float
+  }
+
   type Query {
-    Songs(page: Int!, search: String): SongsList!
+    Songs(input: SongsQueryInput): SongsList!
     SongsByGenre(genre: String!): [Song!]!
   }
 `;

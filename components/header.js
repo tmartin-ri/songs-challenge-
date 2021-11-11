@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function Header({ initialSearch, performSearch }) {
   const [search, setSearch] = useState(initialSearch);
@@ -12,11 +12,12 @@ export default function Header({ initialSearch, performSearch }) {
           <form
             onSubmit={e => {
               e.preventDefault();
-              performSearch(search);
+              const handledSearch = search.replaceAll(/"/g, "''")
+              performSearch(handledSearch);
             }}>
             <div className="input-group">
               <input
-                value={search || ''}
+                value={search || ""}
                 onChange={e => {
                   e.preventDefault();
                   setSearch(e.target.value);
