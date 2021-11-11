@@ -3,7 +3,7 @@ const PER_PAGE = 15;
 export default {
   Query: {
     async Songs(root, args, { db }) {
-      const { page, search, danceabilityLow, danceabilityHigh } = args.input
+      const { page, search, danceabilityLow, danceabilityHigh } = args.input;
       const offsetStart = PER_PAGE * (page - 1);
       const offsetEnd = offsetStart + PER_PAGE;
 
@@ -79,7 +79,7 @@ export default {
           has_more: offsetEnd < total,
           not_danceable: not_danceable[0].values[0][0],
           semi_danceable: semi_danceable[0].values[0][0],
-          danceable: danceable[0].values[0][0],
+          danceable: danceable[0].values[0][0]
         }
       };
     },

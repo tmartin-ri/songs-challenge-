@@ -36,20 +36,20 @@ export async function getServerSideProps({ params }) {
 
 export default function App({ initialSearch, page, danceability }) {
   const router = useRouter();
-  let danceabilityLow = 0, danceabilityHigh = 1
+  let danceabilityLow = 0, danceabilityHigh = 1;
   const performSearch = newSearch => {
     router.replace({ pathname: `/${newSearch}` });
   };
   if (danceability !== 'all') {
     if (danceability === 'danceable') {
-      danceabilityLow = 0.75
-      danceabilityHigh = 1
+      danceabilityLow = 0.75;
+      danceabilityHigh = 1;
     } else if (danceability === 'semi_danceable') {
-      danceabilityLow = 0.51
-      danceabilityHigh = 0.75
+      danceabilityLow = 0.51;
+      danceabilityHigh = 0.75;
     } else if (danceability === 'not_danceable') {
-      danceabilityLow = 0
-      danceabilityHigh = 0.5
+      danceabilityLow = 0;
+      danceabilityHigh = 0.5;
     }
   }
 

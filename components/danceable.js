@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export default function Danceable(props) {
-  const { notDanceable, semiDanceable, danceable, search, danceabilityLow, danceabilityHigh } = props
+  const { notDanceable, semiDanceable, danceable, search, danceabilityLow, danceabilityHigh } = props;
   return (
     <div className="float-lg-start">
       <div className="list-group">
@@ -39,5 +39,5 @@ export default function Danceable(props) {
               </Link>}
       </div>
     </div>
-  )
+  );
 }

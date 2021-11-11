@@ -52,9 +52,9 @@ const fetcher = (page, search, danceabilityLow, danceabilityHigh) =>
   request('http://localhost:3000/api/graphql', SONGS_QUERY, { input: { page, search, danceabilityLow, danceabilityHigh } });
 
 export default function Songs(props) {
-  const { page, search, danceabilityLow, danceabilityHigh, danceability } = props
+  const { page, search, danceabilityLow, danceabilityHigh, danceability } = props;
   const { data, error } = useSWR([page, search, danceabilityLow, danceabilityHigh], fetcher);
-  const [songs, setSongs] = useState([])
+  const [songs, setSongs] = useState([]);
 
   useEffect(() => {
     if (data) {
@@ -62,7 +62,7 @@ export default function Songs(props) {
     }
   }, [data])
 
-  if (!data && !error)
+  if (!data && !error) {
     return (
       <div className="mt-5 d-flex justify-content-center">
         <div className="spinner-border text-info" role="status">
@@ -70,7 +70,8 @@ export default function Songs(props) {
         </div>
       </div>
     );
-
+  }
+  
   if (error) {
     console.error(error);
     return (
