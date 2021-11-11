@@ -1,7 +1,7 @@
-import { request, gql } from 'graphql-request';
-import useSWR from 'swr';
+import { request, gql } from "graphql-request";
+import useSWR from "swr";
 
-import Song from './song';
+import Song from "./song";
 
 const SONGS_QUERY = gql`
   query HomePage($genre: String!) {
@@ -35,7 +35,7 @@ const SONGS_QUERY = gql`
 `;
 
 const fetcher = genre =>
-  request('http://localhost:3000/api/graphql', SONGS_QUERY, {
+  request("http://localhost:3000/api/graphql", SONGS_QUERY, {
     genre
   });
 

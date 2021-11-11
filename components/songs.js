@@ -1,10 +1,10 @@
-import { request, gql } from 'graphql-request';
-import useSWR from 'swr';
-import Link from 'next/link';
+import { request, gql } from "graphql-request";
+import useSWR from "swr";
+import Link from "next/link";
 
-import Danceable from './danceable';
-import Song from './song';
-import { useEffect, useState } from 'react';
+import Danceable from "./danceable";
+import Song from "./song";
+import { useEffect, useState } from "react";
 
 const SONGS_QUERY = gql`
   query HomePage($input: SongsQueryInput) {
@@ -49,7 +49,7 @@ const SONGS_QUERY = gql`
 `;
 
 const fetcher = (page, search, danceabilityLow, danceabilityHigh) =>
-  request('http://localhost:3000/api/graphql', SONGS_QUERY, { input: { page, search, danceabilityLow, danceabilityHigh } });
+  request("http://localhost:3000/api/graphql", SONGS_QUERY, { input: { page, search, danceabilityLow, danceabilityHigh } });
 
 export default function Songs(props) {
   const { page, search, danceabilityLow, danceabilityHigh, danceability } = props;
@@ -116,7 +116,7 @@ function Pagination({ pageInfo, search, danceability }) {
   return (
     <nav aria-label="Page navigation">
       <ul className="pagination mt-5 d-flex justify-content-center">
-        <li className={currentPage === 1 ? 'page-item disabled' : 'page-item'}>
+        <li className={currentPage === 1 ? "page-item disabled" : "page-item"}>
           {currentPage === 1 ? (
             <span className="page-link">Previous</span>
           ) : (
@@ -124,19 +124,19 @@ function Pagination({ pageInfo, search, danceability }) {
               passHref
               href={`/${[search, currentPage - 1, danceability]
                 .filter(part => part)
-                .join('/')}`}>
+                .join("/")}`}>
               <a className="page-link">Previous</a>
             </Link>
           )}
         </li>
 
-        <li className={pageInfo.has_more ? 'page-item' : 'page-item disabled'}>
+        <li className={pageInfo.has_more ? "page-item" : "page-item disabled"}>
           {pageInfo.has_more ? (
             <Link
               passHref
               href={`/${[search, currentPage + 1, danceability]
                 .filter(part => part)
-                .join('/')}`}>
+                .join("/")}`}>
               <a className="page-link">Next</a>
             </Link>
           ) : (

@@ -11,9 +11,9 @@ export default {
         ? `SELECT * FROM songs
       WHERE (danceability >= ${danceabilityLow}
       AND danceability <= ${danceabilityHigh})
-      AND (track_name LIKE '%${search}%'
-      OR track_artist LIKE '%${search}%'
-      OR track_album_name LIKE '%${search}%')
+      AND (track_name LIKE "%${search}%"
+      OR track_artist LIKE "%${search}%"
+      OR track_album_name LIKE "%${search}%")
       ORDER BY track_name ASC
       LIMIT ${PER_PAGE} OFFSET ${offsetStart}`
         : `SELECT * FROM songs
@@ -33,17 +33,17 @@ export default {
       const totalResult = await db.exec(
         search
           ? `SELECT COUNT(*) FROM songs
-        WHERE track_name LIKE '%${search}%'
-        OR track_artist LIKE '%${search}%'
-        OR track_album_name LIKE '%${search}%'`
-        : 'SELECT COUNT(*) FROM songs'
+        WHERE track_name LIKE "%${search}%"
+        OR track_artist LIKE "%${search}%"
+        OR track_album_name LIKE "%${search}%"`
+        : "SELECT COUNT(*) FROM songs"
       );
       const not_danceable = await db.exec(
         search
           ? `SELECT COUNT(*) FROM songs
-        WHERE (track_name LIKE '%${search}%'
-        OR track_artist LIKE '%${search}%'
-        OR track_album_name LIKE '%${search}%')
+        WHERE (track_name LIKE "%${search}%"
+        OR track_artist LIKE "%${search}%"
+        OR track_album_name LIKE "%${search}%")
         AND danceability <= 0.5`
         : `SELECT COUNT(*) FROM songs
         WHERE danceability <= 0.5`
@@ -51,9 +51,9 @@ export default {
       const semi_danceable = await db.exec(
         search
           ? `SELECT COUNT(*) FROM songs
-        WHERE (track_name LIKE '%${search}%'
-        OR track_artist LIKE '%${search}%'
-        OR track_album_name LIKE '%${search}%')
+        WHERE (track_name LIKE "%${search}%"
+        OR track_artist LIKE "%${search}%"
+        OR track_album_name LIKE "%${search}%")
         AND (danceability > 0.5 AND 0.75 > danceability)`
         : `SELECT COUNT(*) FROM songs
         WHERE danceability > 0.5 AND 0.75 > danceability`
@@ -61,9 +61,9 @@ export default {
       const danceable = await db.exec(
         search
           ? `SELECT COUNT(*) FROM songs
-        WHERE (track_name LIKE '%${search}%'
-        OR track_artist LIKE '%${search}%'
-        OR track_album_name LIKE '%${search}%')
+        WHERE (track_name LIKE "%${search}%"
+        OR track_artist LIKE "%${search}%"
+        OR track_album_name LIKE "%${search}%")
         AND danceability >= 0.75`
         : `SELECT COUNT(*) FROM songs
         WHERE danceability >= 0.75`
@@ -86,7 +86,7 @@ export default {
 
     async SongsByGenre(root, { genre }, { db }) {
       const query =
-        'SELECT * FROM songs WHERE playlist_genre = $genre ORDER BY random() LIMIT 5';
+        "SELECT * FROM songs WHERE playlist_genre = $genre ORDER BY random() LIMIT 5";
 
       const stmt = db.prepare(query);
       stmt.bind({ $genre: genre });

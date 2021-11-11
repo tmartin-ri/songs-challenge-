@@ -1,7 +1,7 @@
-import { ApolloServer } from 'apollo-server-micro';
-import schema from '../../graphql/schema';
-import getConfig from 'next/config';
-import initSqlJs from 'sql.js';
+import { ApolloServer } from "apollo-server-micro";
+import schema from "../../graphql/schema";
+import getConfig from "next/config";
+import initSqlJs from "sql.js";
 
 let sqliteDb;
 async function initDb() {
@@ -34,6 +34,6 @@ const startServer = apolloServer.start();
 export default async function handler(req, res) {
   await startServer;
   await apolloServer.createHandler({
-    path: '/api/graphql'
+    path: "/api/graphql"
   })(req, res);
 }
